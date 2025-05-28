@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head><title>Salary Predictor</title></head>
+<body>
+  <h2>Enter Age and Experience</h2>
+  <form method="POST" action="/predict">
+    Age: <input type="number" name="age" step="0.1"><br><br>
+    Experience: <input type="number" name="experience" step="0.1"><br><br>
+    <input type="submit" value="Predict">
+  </form>
+  <h3>{{ prediction_text }}</h3>
+</body>
+</html>
