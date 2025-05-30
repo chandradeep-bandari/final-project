@@ -38,3 +38,16 @@ jobs:
 
     - name: Push Docker image
       run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/salary-predictor:latest
+
+    - name: SSH and deploy (inline script)
+      run: |
+        gcloud compute ssh chandradeepbandari48@l00187658-dockernode \
+          --zone=europe-west4-b \
+          --command="
+              cd /home/chandradeepbandari48/ && \
+              rm -rf final-project && \
+              git clone https://github.com/chandradeep-bandari/final-project.git && \
+              cd final-project && \
+              /usr/local/bin/minikube kubectl -- delete -f k8s-deployment.yaml || true && \
+              sleep 5 && \
+              /usr/local/bin/minikube kubectl -- apply -f k8s-deployment.yaml"
