@@ -59,3 +59,7 @@ jobs:
               /usr/local/bin/minikube kubectl -- delete -f k8s-deployment.yaml || true && \
               sleep 5 && \
               /usr/local/bin/minikube kubectl -- apply -f k8s-deployment.yaml"
+
+
+
+              
