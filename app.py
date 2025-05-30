@@ -3,7 +3,7 @@ import joblib
 import numpy as np
 
 app = Flask(__name__)
-model = joblib.load("model.pkl")
+model = joblib.load("model.pkl")  # ✅ Correct filename
 
 @app.route("/")
 def home():
@@ -13,8 +13,7 @@ def home():
 def predict():
     age = float(request.form["age"])
     exp = float(request.form["experience"])
-    #prediction = model.predict(np.array([[age, exp]]))
-    prediction = 520
+    prediction = model.predict(np.array([[age, exp]]))  # Uncomment this
     return render_template("index.html", prediction_text=f"Predicted Salary: ${prediction[0]:.2f}")
 
 if __name__ == '__main__':

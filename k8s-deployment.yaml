@@ -15,5 +15,6 @@ spec:
       containers:
       - name: predictor
         image: salary-predictor:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000

@@ -11,5 +11,5 @@ y = data["salary"]
 model = LinearRegression()
 model.fit(X, y)
 
-# Save model
-joblib.dump(model, "model.pkl")
+# ✅ Correct way to save the model (use .pkl extension)
+joblib.dump(model, "model.pkl") 
