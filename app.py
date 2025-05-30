@@ -13,7 +13,8 @@ def home():
 def predict():
     age = float(request.form["age"])
     exp = float(request.form["experience"])
-    prediction = model.predict(np.array([[age, exp]]))  # Uncomment this
+    #prediction = model.predict(np.array([[age, exp]]))  # Uncomment this
+    prediction = 222
     return render_template("index.html", prediction_text=f"Predicted Salary: ${prediction[0]:.2f}")
 
 if __name__ == '__main__':
