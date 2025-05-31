@@ -6,14 +6,14 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy all your code including model.py and app.py
+# Copy ALL required files including salary_data.csv
 COPY . .
 
 # Run model.py to create model.pkl inside the container
 RUN python model.py
 
-# Expose port your app listens on
+# Expose the port your app runs on
 EXPOSE 5000
 
-# Run your app
+# Run the Flask app
 CMD ["python", "app.py"]
