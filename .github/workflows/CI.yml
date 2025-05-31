@@ -51,7 +51,6 @@ jobs:
         sed -i "s|REPLACE_ME|$IMAGE_NAME:$SHORT_SHA|" k8s-deployment.yaml
 
   deploy:
-    needs: build-and-push
     runs-on: ubuntu-latest
     steps:
     - name: Set Docker image env
