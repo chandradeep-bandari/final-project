@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: predictor
-        image: salary-predictor:PLACEHOLDER_TAG
+        image: REPLACE_ME  # Will be replaced in CI with SHA-tagged Docker image
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000

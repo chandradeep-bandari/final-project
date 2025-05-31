@@ -28,9 +28,9 @@ jobs:
       run: |
         pytest test_app.py --maxfail=1 --disable-warnings -v
 
-  build-push:
-    runs-on: ubuntu-latest
+  build-and-push:
     needs: test
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -48,15 +48,33 @@ jobs:
       run: |
         IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/salary-predictor
         SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-        # Replace placeholder in k8s deployment file
-        sed -i "s|image: salary-predictor:.*|image: $IMAGE_NAME:$SHORT_SHA|" k8s-deployment.yaml
         docker build --no-cache -t $IMAGE_NAME:$SHORT_SHA .
         docker push $IMAGE_NAME:$SHORT_SHA
 
+    - name: Replace image tag in deployment file
+      run: |
+        IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/salary-predictor
+        SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+        sed -i "s|REPLACE_ME|$IMAGE_NAME:$SHORT_SHA|" k8s-deployment.yaml
+
+    - name: Upload deployment file
+      uses: actions/upload-artifact@v3
+      with:
+        name: k8s-files
+        path: k8s-deployment.yaml
+
   deploy:
+    needs: build-and-push
     runs-on: ubuntu-latest
-    needs: build-push
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Download updated k8s manifest
+      uses: actions/download-artifact@v3
+      with:
+        name: k8s-files
+
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v1
       with:
@@ -65,7 +83,7 @@ jobs:
     - name: Set GCP Project
       run: gcloud config set project vernal-surge-453410-r6
 
-    - name: SSH and deploy (inline script)
+    - name: SSH and deploy
       run: |
         gcloud compute ssh chandradeepbandari48@l00187658-dockernode \
           --zone=europe-west4-b \
