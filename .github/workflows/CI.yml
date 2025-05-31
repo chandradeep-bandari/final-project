@@ -50,10 +50,13 @@ jobs:
         SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
         sed -i "s|REPLACE_ME|$IMAGE_NAME:$SHORT_SHA|" k8s-deployment.yaml
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build-push
-    steps:
+deploy:
+  needs: build-and-push
+  runs-on: ubuntu-latest
+  steps:
+    - name: Set Docker image env
+      run: echo "IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/salary-predictor:$(echo '${{ github.sha }}' | cut -c1-7)" >> $GITHUB_ENV
+
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v1
       with:
@@ -62,7 +65,7 @@ jobs:
     - name: Set GCP Project
       run: gcloud config set project vernal-surge-453410-r6
 
-    - name: SSH and deploy (inline script)
+    - name: SSH and deploy with updated image
       run: |
         gcloud compute ssh chandradeepbandari48@l00187658-dockernode \
           --zone=europe-west4-b \
@@ -70,6 +73,7 @@ jobs:
                      rm -rf final-project && \
                      git clone https://github.com/chandradeep-bandari/final-project.git && \
                      cd final-project && \
+                     sed -i 's|REPLACE_ME|${{ env.IMAGE }}|' k8s-deployment.yaml && \
                      /usr/local/bin/minikube kubectl -- delete -f k8s-deployment.yaml || true && \
                      sleep 5 && \
                      /usr/local/bin/minikube kubectl -- apply -f k8s-deployment.yaml && \
