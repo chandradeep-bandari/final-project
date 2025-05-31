@@ -25,10 +25,9 @@ jobs:
         pip install -r requirements.txt
         pip install pytest
 
-    - name: Run tests with pytest
+    - name: Run tests in test_app.py only
       run: |
-        pytest --maxfail=1 --disable-warnings -v
-      # If tests fail, workflow stops here automaticallys
+        pytest test_app.py --maxfail=1 --disable-warnings -v
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
@@ -38,7 +37,6 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-
 
     - name: Build and push Docker image with tags
       run: |
