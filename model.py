@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 
 def load_data():
-    filename = "salary_data.csv"
+    filename = "/app/salary_data.csv"
     try:
         data = pd.read_csv(filename)
     except FileNotFoundError:
