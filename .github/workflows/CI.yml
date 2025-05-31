@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - dev
+      - main
 
 jobs:
   test-build-push:
@@ -64,4 +65,5 @@ jobs:
                      cd final-project && \
                      /usr/local/bin/minikube kubectl -- delete -f k8s-deployment.yaml || true && \
                      sleep 5 && \
-                     /usr/local/bin/minikube kubectl -- apply -f k8s-deployment.yaml"
+                     /usr/local/bin/minikube kubectl -- apply -f k8s-deployment.yaml  && \
+                     /usr/local/bin/minikube kubectl -- apply -f k8s-service.yaml"
