@@ -23,6 +23,6 @@ def test_predict(client):
     }
     response = client.post('/predict', data=data)
     assert response.status_code == 200
-    # The response should include "Predicted Salary:" text with a dollar amount
+    # The response should include "Predicted Salary:" text with a dollar amounts
     assert b"Predicted Salary:" in response.data
     assert b"$" in response.data

@@ -28,7 +28,7 @@ jobs:
     - name: Run tests with pytest
       run: |
         pytest --maxfail=1 --disable-warnings -v
-      # If tests fail, workflow stops here automatically
+      # If tests fail, workflow stops here automaticallys
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
