@@ -2,18 +2,17 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-# Copy requirements and install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy all your code including model.py and app.py
 COPY . .
 
-# Run model.py to create model.pkl inside the container
+# Verify files are present
+RUN ls -la && \
+    echo "Checking for salary_data.csv..." && \
+    if [ -f "salary_data.csv" ]; then echo "File found"; else echo "File missing"; exit 1; fi
+
 RUN python model.py
 
-# Expose port your app listens on
 EXPOSE 5000
-
-# Run your app
 CMD ["python", "app.py"]
