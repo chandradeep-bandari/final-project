@@ -11,7 +11,7 @@ def setup_dummy_data():
     data = {
         'age': [25, 30, 35, 40, 45],
         'experience': [1, 3, 5, 7, 9],
-        'salary': [30000, 35000, 40000, 45000, 50000]  # Your target variable
+        'salary': [30000, 35000, 40000, 45000, 50000]  # Your target variables
     }
     df = pd.DataFrame(data)
     df.to_csv('salary_data.csv', index=False)

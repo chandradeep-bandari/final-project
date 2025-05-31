@@ -10,7 +10,7 @@ def client():
 def test_homepage(client):
     response = client.get('/')
     assert response.status_code == 200
-    # Check for form fields and text in the response HTML
+    # Check for form fields and text in the response HTMLs
     assert b"Enter Age and Experience" in response.data
     assert b"Age:" in response.data
     assert b"Experience:" in response.data

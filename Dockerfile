@@ -1,25 +1,19 @@
 FROM python:3.9-slim
 
-# Set working directory
 WORKDIR /app
 
-# Copy all files from current directory to /app inside the container
-COPY . .
-
-# Debug: List all files to confirm salary_data.csv exists
-RUN echo "🔍 Files in /app after COPY:" && ls -al /app
-
-# Debug: Check if salary_data.csv is present
-RUN if [ -f "salary_data.csv" ]; then echo "✅ salary_data.csv found"; else echo "❌ salary_data.csv MISSING"; fi
-
-# Install dependencies
+# Copy requirements and install dependencies
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Run the model script (should now find the CSV)
+# Copy all your code including model.py and app.py
+COPY . .
+
+# Run model.py to create model.pkl inside the container
 RUN python model.py
 
-# Expose port
+# Expose port your app listens on
 EXPOSE 5000
 
-# Start app
+# Run your app
 CMD ["python", "app.py"]
