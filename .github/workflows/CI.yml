@@ -50,10 +50,10 @@ jobs:
         SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
         sed -i "s|REPLACE_ME|$IMAGE_NAME:$SHORT_SHA|" k8s-deployment.yaml
 
-deploy:
-  needs: build-and-push
-  runs-on: ubuntu-latest
-  steps:
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
     - name: Set Docker image env
       run: echo "IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/salary-predictor:$(echo '${{ github.sha }}' | cut -c1-7)" >> $GITHUB_ENV
 
