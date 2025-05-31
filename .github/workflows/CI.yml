@@ -7,9 +7,8 @@ on:
       - main
 
 jobs:
-  test-build-deploy:
+  test:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -29,6 +28,13 @@ jobs:
       run: |
         pytest test_app.py --maxfail=1 --disable-warnings -v
 
+  build-push:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
@@ -38,17 +44,19 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Build and push Docker image with tags
+    - name: Build and push Docker image with SHA tag
       run: |
         IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/salary-predictor
         SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-        docker build --no-cache -t $IMAGE_NAME:latest \
-                     -t $IMAGE_NAME:${{ github.ref_name }} \
-                     -t $IMAGE_NAME:${{ github.ref_name }}-$SHORT_SHA .
-        docker push $IMAGE_NAME:latest
-        docker push $IMAGE_NAME:${{ github.ref_name }}
-        docker push $IMAGE_NAME:${{ github.ref_name }}-$SHORT_SHA
+        # Replace placeholder in k8s deployment file
+        sed -i "s|image: salary-predictor:.*|image: $IMAGE_NAME:$SHORT_SHA|" k8s-deployment.yaml
+        docker build --no-cache -t $IMAGE_NAME:$SHORT_SHA .
+        docker push $IMAGE_NAME:$SHORT_SHA
 
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-push
+    steps:
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v1
       with:
